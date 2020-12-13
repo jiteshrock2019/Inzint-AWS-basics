@@ -1,0 +1,32 @@
+service: myserverlessproject
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  region: ${opt:region, 'ap-south-1'}
+  runtime: nodejs12.x
+  profile: serverlessUser
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: myserverlessprojectuploadbucket-8859
+      localDir: UploadData
+
+functions:
+  getUSer:
+    handler: lambdas/getUser.handler
+    events:
+      - http:
+          path: get-user/{ID}
+          method: GET
+          cors: true
+resources:
+  Resources:
+    DemoBucketUpload:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: myserverlessprojectuploadbucket-8859
